@@ -5,6 +5,7 @@
 #include <ctime>
 #include <windows.h>
 #include <sstream>
+#include <thread>
 
 using namespace std;
 
@@ -122,8 +123,42 @@ void showMenu() {
     cout << "Enter your choice: ";
 }
 
+std::string RandomString(const int len)
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    static const char alphanum[] =
+        "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+    std::string tmp_s;
+    tmp_s.reserve(len);
+
+    for (int i = 0; i < len; ++i) {
+        tmp_s += alphanum[rand() % (sizeof(alphanum) - 1)];
+    }
+    return tmp_s;
+}
+
+void NameChanger()
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    std::string NAME = (std::string)(RandomString(15));
+    SetConsoleTitleA(NAME.c_str());
+
+}
+
+DWORD ChangeName(LPVOID in)
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    while (true)
+    {
+        NameChanger();
+    }
+}
+
 int main() {
-    SetConsoleOutputCP(CP_UTF8);
+
+    CreateThread(NULL, NULL, ChangeName, NULL, NULL, NULL);
 
     char enteredKey[20];
     cout << "Enter your key: ";
